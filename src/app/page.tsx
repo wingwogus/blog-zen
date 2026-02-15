@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 export default function Home() {
   const [topic, setTopic] = useState('');
+  const [blogUrl, setBlogUrl] = useState(''); // New field
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState('');
   const [showSettings, setShowSettings] = useState(false);
@@ -33,8 +34,8 @@ export default function Home() {
     setIsGenerating(true);
     try {
       const { generateBlogDraft } = await import('./actions');
-      // Pass the key to the server action
-      const draft = await generateBlogDraft(topic, activeKey);
+      // Pass both topic and blogUrl
+      const draft = await generateBlogDraft(topic, activeKey, blogUrl);
       setResult(draft);
     } catch (error) {
       console.error('Generation failed:', error);
@@ -45,106 +46,103 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 py-12 px-4 sm:px-6 lg:px-8 dark:bg-zinc-950 font-sans">
-      <div className="max-w-3xl mx-auto">
-        <header className="mb-12 flex items-center justify-between">
+    <div className="min-h-screen bg-[#fafafa] py-16 px-4 sm:px-6 lg:px-8 dark:bg-[#050505] font-sans selection:bg-blue-100 dark:selection:bg-blue-900/30">
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-16 flex items-end justify-between border-b border-zinc-200 dark:border-zinc-800 pb-8">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
-              🚀 블로그 초안 생성기
-            </h1>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400">
-              사용자 API Key를 사용하여 보안과 비용을 한 번에.
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-2xl">🚀</span>
+              <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                Blog Zen
+              </h1>
+            </div>
+            <p className="text-zinc-500 dark:text-zinc-400 font-medium">
+              AI-Powered Premium Blog Draft Generator
             </p>
           </div>
           <button
             onClick={() => setShowSettings(true)}
-            className="p-3 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
-            title="Settings"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all shadow-sm"
           >
-            ⚙️
+            <span>⚙️</span> API Settings
           </button>
         </header>
 
-        {showSettings && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl max-w-md w-full shadow-xl border border-zinc-200 dark:border-zinc-800">
-              <h2 className="text-2xl font-bold mb-6 dark:text-zinc-50">API 설정</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1 dark:text-zinc-300">OpenAI Key</label>
+        <main className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Input Area */}
+          <div className="lg:col-span-5 space-y-8">
+            <section className="bg-white dark:bg-zinc-900/50 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/20 dark:shadow-none backdrop-blur-sm">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <label htmlFor="blogUrl" className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                    My Blog URL (Optional)
+                  </label>
                   <input
-                    type="password"
-                    value={apiKeys.openai}
-                    onChange={(e) => setApiKeys({...apiKeys, openai: e.target.value})}
-                    placeholder="sk-..."
-                    className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent dark:text-zinc-100"
+                    type="url"
+                    id="blogUrl"
+                    value={blogUrl}
+                    onChange={(e) => setBlogUrl(e.target.value)}
+                    placeholder="https://yourblog.com"
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1 dark:text-zinc-300">Gemini Key</label>
-                  <input
-                    type="password"
-                    value={apiKeys.gemini}
-                    onChange={(e) => setApiKeys({...apiKeys, gemini: e.target.value})}
-                    placeholder="AIza..."
-                    className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent dark:text-zinc-100"
+
+                <div className="space-y-2">
+                  <label htmlFor="topic" className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                    Blog Topic
+                  </label>
+                  <textarea
+                    id="topic"
+                    rows={4}
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    placeholder="작성하고 싶은 블로그의 주제나 핵심 키워드를 입력하세요."
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                   />
                 </div>
-              </div>
-              <div className="mt-8 flex gap-3">
-                <button
-                  onClick={() => saveKeys(apiKeys)}
-                  className="flex-1 py-2 bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900 font-bold rounded-lg"
-                >
-                  저장하기
-                </button>
-                <button
-                  onClick={() => setShowSettings(false)}
-                  className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg dark:text-zinc-300"
-                >
-                  취소
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
-        <main className="space-y-8">
-          <section className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="topic" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                  블로그 주제
-                </label>
-                <input
-                  type="text"
-                  id="topic"
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  placeholder="예: 2026년 AI 트렌드, 건강한 식습관 등"
-                  className="w-full px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isGenerating || !topic.trim()}
-                className="w-full py-4 bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900 font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
-              >
-                {isGenerating ? '⏳ 생성 중...' : '초안 생성하기'}
-              </button>
-            </form>
-          </section>
-
-          {result && (
-            <section className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-4 border-b pb-2">
-                Draft Result
-              </h2>
-              <div className="prose dark:prose-invert max-w-none text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap">
-                {result}
-              </div>
+                <button
+                  type="submit"
+                  disabled={isGenerating || !topic.trim()}
+                  className="w-full py-4 bg-zinc-950 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-950 font-bold rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100 shadow-lg shadow-zinc-950/20 dark:shadow-zinc-50/10"
+                >
+                  {isGenerating ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      Generating...
+                    </span>
+                  ) : 'Create Draft'}
+                </button>
+              </form>
             </section>
-          )}
+          </div>
+
+          {/* Result Area */}
+          <div className="lg:col-span-7">
+            {result ? (
+              <section className="bg-white dark:bg-zinc-900 p-10 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl animate-in fade-in slide-in-from-right-8 duration-700">
+                <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+                  <h2 className="text-sm font-bold uppercase tracking-widest text-zinc-400">
+                    Draft Output
+                  </h2>
+                  <button 
+                    onClick={() => navigator.clipboard.writeText(result)}
+                    className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Copy Markdown
+                  </button>
+                </div>
+                <div className="prose dark:prose-invert max-w-none text-zinc-800 dark:text-zinc-200 leading-relaxed">
+                  <div className="whitespace-pre-wrap">{result}</div>
+                </div>
+              </section>
+            ) : (
+              <div className="h-full min-h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl text-zinc-400">
+                <span className="text-4xl mb-4">✍️</span>
+                <p className="font-medium text-sm">입력창에 주제를 넣고 초안을 생성해 보세요.</p>
+              </div>
+            )}
+          </div>
         </main>
       </div>
     </div>
