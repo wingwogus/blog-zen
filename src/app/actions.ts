@@ -44,9 +44,8 @@ export async function generateBlogDraft(topic: string, userApiKey: string, blogU
 
   // 2. Gemini SDK 초기화
   const genAI = new GoogleGenerativeAI(userApiKey);
-  // [BACKEND FIX] 모델명 수정: gemini-3-flash는 아직 공개 API(v1beta)에서 지원되지 않음.
-  // 안정적인 최신 버전인 gemini-1.5-flash로 롤백합니다.
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  // [BACKEND UPDATE] 모델 버전 변경: 사용자 요청에 따라 2.0 Flash 사용
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   // [PROMENG UPDATE] 프롬프트 고도화: 스타일 분석 지침 강화
   const systemPrompt = `
