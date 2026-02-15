@@ -14,44 +14,69 @@ export async function generateBlogDraft(topic: string, userApiKey: string, blogU
   let blogContext = "";
   if (blogUrl) {
     try {
-      // 실제 환경에서는 CORS 및 스크래핑 방지 정책으로 인해 서버 사이드 페칭 필요
-      const response = await fetch(blogUrl, { next: { revalidate: 3600 } });
+      // [BACKEND UPDATE] 서버 사이드 페칭 강화
+      const response = await fetch(blogUrl, { 
+        next: { revalidate: 3600 },
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
+      
+      if (!response.ok) throw new Error('Blog fetch failed');
+      
       const html = await response.text();
-      // 간단한 메타 데이터 및 텍스트 추출 (현실적으로는 JSDOM 등을 활용하지만, 여기서는 핵심 텍스트 위주)
-      blogContext = html.substring(0, 2000).replace(/<[^>]*>?/gm, ''); 
+      
+      // [BACKEND UPDATE] 스마트 컨텍스트 추출
+      // 단순 2000자가 아닌, 본문일 가능성이 높은 영역을 확보하기 위해 범위를 대폭 늘리고
+      // 불필요한 공백과 스크립트를 제거하여 '의미 있는 텍스트' 밀도를 높임
+      blogContext = html
+        .replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gm, "") // 스크립트 제거
+        .replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gm, "")   // 스타일 제거
+        .replace(/<[^>]*>?/gm, ' ')                           // 태그 제거
+        .replace(/\s+/g, ' ')                                 // 공백 축소
+        .substring(0, 30000);                                 // Flash 모델의 긴 컨텍스트 활용 (30k chars)
+        
     } catch (e) {
-      console.warn('Blog URL analysis failed, proceeding with general style.');
+      console.warn('Blog URL analysis failed, proceeding with general style.', e);
+      blogContext = "블로그 접속 불가 또는 분석 실패. 일반적인 전문 블로그 스타일을 적용합니다.";
     }
   }
 
   // 2. Gemini SDK 초기화
   const genAI = new GoogleGenerativeAI(userApiKey);
-  // 사용자의 요청에 따라 최신 gemini-3-flash 모델 사용
+  // [BACKEND CONFIRM] gemini-3-flash 엔진 사용
   const model = genAI.getGenerativeModel({ model: "gemini-3-flash" });
 
+  // [PROMENG UPDATE] 프롬프트 고도화: 스타일 분석 지침 강화
   const systemPrompt = `
-당신은 세계 최고의 블로그 콘텐츠 전략가이자 전문 작가입니다. 
-다음 정보를 바탕으로 독창적이고 매력적인 블로그 초안을 마크다운 형식으로 작성하십시오.
+당신은 'Blog Zen' 서비스의 수석 콘텐츠 에디터입니다.
+사용자의 요구사항과 기존 블로그 스타일을 완벽하게 동기화하여, 수정 없이 즉시 발행 가능한 수준의 초안을 작성하십시오.
+
+[핵심 미션]
+1. **Style Cloning**: 제공된 [참고 텍스트]에서 어조(Tone), 문장 길이, 자주 쓰는 어휘, 문단 구성 방식을 분석하여 작성 스타일에 그대로 반영하십시오.
+   - 예: 딱딱한 문체 vs 친근한 해요체, 이모지 사용 여부, 소제목 활용 패턴 등.
+2. **Value First**: 단순 정보 나열이 아닌, 독자에게 '통찰(Insight)'과 '실용적 가치'를 주는 글을 쓰십시오.
 
 [입력 정보]
 - 주제: "${topic}"
-- 참고 블로그 URL: ${blogUrl || '제공되지 않음'}
-- 블로그 스타일 컨텍스트: ${blogContext ? '아래 제공되는 텍스트의 톤앤매너, 문체, 단어 선택을 분석하여 완벽하게 반영하십시오.' : '전문적이고 신뢰감 있는 문체'}
+- 참고 URL: ${blogUrl || '없음'}
 
-[분석할 블로그 텍스트 데이터]
+[참고 텍스트 (사용자 블로그 데이터)]
+"""
 ${blogContext}
+"""
 
-[작성 가이드라인]
-1. 형식: GitHub Flavored Markdown을 준수하십시오.
-2. 구조: 
-   - [H1] 독자의 시선을 사로잡는 강력한 제목
-   - [인용구] 글의 핵심 메시지 요약
-   - [H2] 흥미로운 서론 (최신 트렌드나 통계 활용)
-   - [H2/H3] 본문 (3개 이상의 심층 섹션, 리스트와 볼트체 적절히 사용)
-   - [H2] 결론 (독자의 행동을 촉구하는 문구 포함)
-   - [구분선] 이후 SEO용 태그 및 요약 정보
-3. 언어: 한국어 (매끄럽고 세련된 문장 구사)
-4. 주의사항: 절대 AI가 쓴 것처럼 보이지 않게 인간적인 통찰을 담으십시오.
+[출력 가이드라인]
+- 포맷: GitHub Flavored Markdown (가독성 최적화)
+- 구조:
+  1. **헤드라인**: 클릭을 유도하는 매력적인 제목 (H1)
+  2. **오프닝**: 독자의 공감을 이끌어내는 도입부 (3문장 이내)
+  3. **본문**: 3~4개의 핵심 소주제 (H2)와 구체적인 설명. 불렛 포인트 활용 적극 권장.
+  4. **클로징**: 여운을 남기거나 행동을 유도하는 결론
+  5. **SEO 태그**: 글의 하단에 관련 해시태그 5개 이상 배치
+- 언어: 한국어 (Natural Korean)
+
+지금 바로 작성을 시작하십시오.
   `;
 
   try {
@@ -59,15 +84,15 @@ ${blogContext}
     const response = await result.response;
     const text = response.text();
     
-    if (!text) throw new Error('AI가 응답을 생성하지 못했습니다.');
+    if (!text) throw new Error('AI 응답 생성 실패');
     
     return text;
 
   } catch (error: any) {
     console.error('Gemini API Error:', error);
     if (error.message?.includes('API_KEY_INVALID')) {
-      throw new Error('유효하지 않은 API Key입니다. 설정을 확인해주세요.');
+      throw new Error('API Key가 유효하지 않습니다. 설정을 확인해주세요.');
     }
-    throw new Error('AI 생성 도중 오류가 발생했습니다. (Gemini Pro 엔진)');
+    throw new Error(`AI 생성 오류: ${error.message}`);
   }
 }
