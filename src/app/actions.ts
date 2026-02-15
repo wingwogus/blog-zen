@@ -26,8 +26,8 @@ export async function generateBlogDraft(topic: string, userApiKey: string, blogU
 
   // 2. Gemini SDK 초기화
   const genAI = new GoogleGenerativeAI(userApiKey);
-  // 가장 최신 모델인 gemini-1.5-flash 사용
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  // 사용자의 요청에 따라 최신 gemini-3-flash 모델 사용
+  const model = genAI.getGenerativeModel({ model: "gemini-3-flash" });
 
   const systemPrompt = `
 당신은 세계 최고의 블로그 콘텐츠 전략가이자 전문 작가입니다. 
