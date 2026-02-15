@@ -12,8 +12,8 @@ import {
   Sparkles,
   ChevronRight,
   Github,
-  Moon,
-  Sun
+  Zap,
+  Bot
 } from 'lucide-react';
 
 export default function Home() {
@@ -28,7 +28,6 @@ export default function Home() {
     gemini: '',
   });
 
-  // Load keys from localStorage on mount
   useEffect(() => {
     setApiKeys({
       openai: localStorage.getItem('openai_key') || '',
@@ -73,149 +72,138 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] dark:bg-[#0A0A0A] text-zinc-900 dark:text-zinc-100 selection:bg-blue-100 dark:selection:bg-blue-900/40 transition-colors duration-300">
-      {/* Background Decor */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-40 dark:opacity-20">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-400/20 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-400/20 blur-[120px] rounded-full" />
+    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-900/40">
+      {/* Background Gradients */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-gradient-to-br from-indigo-400/20 to-purple-400/20 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-gradient-to-tl from-blue-400/20 to-teal-400/20 blur-[120px] rounded-full" />
       </div>
 
-      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-12 py-10 lg:py-16">
-        {/* Navigation / Header */}
-        <nav className="flex items-center justify-between mb-20 animate-in fade-in slide-in-from-top-4 duration-1000">
+      <div className="relative max-w-[1600px] mx-auto px-6 lg:px-12 py-8">
+        {/* Header */}
+        <header className="flex items-center justify-between mb-12 backdrop-blur-md bg-white/70 dark:bg-black/40 px-6 py-4 rounded-full border border-slate-200/50 dark:border-slate-800/50 sticky top-4 z-50 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-zinc-900 dark:bg-zinc-50 rounded-xl flex items-center justify-center shadow-lg">
-              <Sparkles className="w-6 h-6 text-white dark:text-black" />
+            <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <Zap className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight">Blog Zen</h1>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500">
-                Premium Engine
-              </p>
-            </div>
+            <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+              Blog Zen
+            </span>
           </div>
-
-          <div className="flex items-center gap-4">
-            <a 
-              href="https://github.com/wingwogus/blog-zen" 
-              target="_blank" 
-              className="p-2.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
-            >
-              <Github className="w-5 h-5" />
-            </a>
+          <div className="flex gap-3">
             <button
               onClick={() => setShowSettings(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm font-semibold shadow-sm hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 transition-all"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 transition-all"
             >
-              <Settings className="w-4 h-4" />
-              <span>Settings</span>
+              <Settings className="w-3.5 h-3.5" />
+              <span>Config</span>
             </button>
           </div>
-        </nav>
+        </header>
 
-        <main className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-          {/* Left Panel: Inputs */}
-          <div className="lg:col-span-5 space-y-10 animate-in fade-in slide-in-from-left-8 duration-1000 delay-200">
-            <div className="space-y-4">
-              <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1]">
-                Masterful drafts, <br />
-                <span className="text-blue-600 dark:text-blue-500">Zero effort.</span>
-              </h2>
-              <p className="text-lg text-zinc-500 dark:text-zinc-400 max-w-md leading-relaxed">
-                Connect your style, define your topic, and let the most advanced models do the heavy lifting.
+        <main className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 min-h-[80vh]">
+          {/* Left: Input Panel */}
+          <div className="flex flex-col justify-center space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
+            <div className="space-y-4 px-2">
+              <h1 className="text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1]">
+                Write faster,<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
+                  Think deeper.
+                </span>
+              </h1>
+              <p className="text-lg text-slate-500 dark:text-slate-400 max-w-md font-medium">
+                AI가 당신의 블로그 스타일을 분석하고, <br/>가장 완벽한 초안을 설계합니다.
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8 p-1 w-full">
-              <div className="group space-y-2">
-                <label className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-400 group-focus-within:text-blue-500 transition-colors">
-                  <Globe className="w-3.5 h-3.5" />
-                  Reference Blog URL
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-slate-900/60 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-none backdrop-blur-xl">
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider pl-1">
+                  <Globe className="w-3 h-3" /> Target Blog URL
                 </label>
                 <input
                   type="url"
                   value={blogUrl}
                   onChange={(e) => setBlogUrl(e.target.value)}
-                  placeholder="https://tistory.com/..."
-                  className="w-full px-5 py-4 rounded-2xl bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
+                  placeholder="https://my-blog.com (스타일 분석용)"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium"
                 />
               </div>
 
-              <div className="group space-y-2">
-                <label className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-400 group-focus-within:text-blue-500 transition-colors">
-                  <Layout className="w-3.5 h-3.5" />
-                  Writing Topic
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider pl-1">
+                  <Layout className="w-3 h-3" /> Topic & Keywords
                 </label>
                 <textarea
-                  rows={6}
+                  rows={5}
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
-                  placeholder="What's on your mind today?"
-                  className="w-full px-5 py-4 rounded-2xl bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all resize-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
+                  placeholder="작성할 주제를 입력하세요. 구체적일수록 좋습니다."
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all resize-none font-medium leading-relaxed"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isGenerating || !topic.trim()}
-                className="group relative w-full py-5 bg-zinc-900 dark:bg-white text-white dark:text-black font-bold rounded-2xl hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-30 disabled:hover:scale-100 shadow-xl shadow-zinc-900/20 dark:shadow-white/10 overflow-hidden"
+                className="w-full py-5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-2xl transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-indigo-500/25 disabled:opacity-50 disabled:shadow-none disabled:hover:scale-100"
               >
-                <div className="relative z-10 flex items-center justify-center gap-2">
-                  {isGenerating ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                      <span>Synthesizing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Generate Professional Draft</span>
-                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-10 transition-opacity" />
+                {isGenerating ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Generating...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2 text-lg">
+                    Generate Draft <ChevronRight className="w-5 h-5" />
+                  </span>
+                )}
               </button>
             </form>
           </div>
 
-          {/* Right Panel: Output */}
-          <div className="lg:col-span-7 h-full animate-in fade-in slide-in-from-right-8 duration-1000 delay-400">
+          {/* Right: Output Panel */}
+          <div className="relative lg:h-[85vh] animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
             {result ? (
-              <div className="bg-white dark:bg-zinc-900 rounded-[32px] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden h-fit">
-                <div className="px-8 py-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/30">
+              <div className="h-full flex flex-col bg-white dark:bg-[#0F0F0F] rounded-[32px] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 backdrop-blur-md">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-red-400" />
-                    <div className="w-2 h-2 rounded-full bg-amber-400" />
-                    <div className="w-2 h-2 rounded-full bg-green-400" />
-                    <span className="ml-3 text-[11px] font-bold text-zinc-400 uppercase tracking-widest">
-                      AI Generated Output
-                    </span>
+                    <div className="px-2.5 py-1 rounded-md bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase tracking-wider">
+                      Markdown Preview
+                    </div>
                   </div>
                   <button 
                     onClick={handleCopy}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-bold hover:bg-zinc-50 transition-all active:scale-95 shadow-sm"
+                    className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 transition-colors"
+                    title="Copy to clipboard"
                   >
-                    {copied ? (
-                      <><Check className="w-3.5 h-3.5 text-green-500" /> Copied</>
-                    ) : (
-                      <><Copy className="w-3.5 h-3.5" /> Copy Markdown</>
-                    )}
+                    {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
-                <div className="p-8 lg:p-12 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                  <article className="prose dark:prose-invert prose-zinc max-w-none prose-headings:font-black prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-p:leading-relaxed">
+                
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-8 lg:p-10">
+                  <article className="prose prose-slate dark:prose-invert max-w-none 
+                    prose-headings:font-black prose-headings:tracking-tight 
+                    prose-h1:text-4xl prose-h1:bg-clip-text prose-h1:text-transparent prose-h1:bg-gradient-to-br prose-h1:from-slate-900 prose-h1:to-slate-600 dark:prose-h1:from-white dark:prose-h1:to-slate-400 prose-h1:mb-8
+                    prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:border-slate-100 dark:prose-h2:border-slate-800 prose-h2:pb-2
+                    prose-p:text-lg prose-p:leading-8 prose-p:text-slate-600 dark:prose-p:text-slate-300
+                    prose-blockquote:border-l-4 prose-blockquote:border-indigo-500 prose-blockquote:bg-slate-50 dark:prose-blockquote:bg-slate-900/50 prose-blockquote:py-2 prose-blockquote:px-5 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
+                    prose-li:text-lg prose-li:text-slate-600 dark:prose-li:text-slate-300
+                    prose-strong:text-indigo-600 dark:prose-strong:text-indigo-400 prose-strong:font-bold
+                    prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-sm prose-code:font-mono prose-code:text-pink-600 dark:prose-code:text-pink-400 before:prose-code:content-none after:prose-code:content-none">
                     <ReactMarkdown>{result}</ReactMarkdown>
                   </article>
                 </div>
               </div>
             ) : (
-              <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-zinc-50/50 dark:bg-zinc-900/30 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[32px] text-zinc-400 transition-colors">
-                <div className="w-20 h-20 bg-white dark:bg-zinc-900 rounded-3xl flex items-center justify-center shadow-sm mb-6">
-                  <Send className="w-8 h-8 opacity-20" />
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 bg-slate-50/50 dark:bg-slate-900/20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[32px] group">
+                <div className="w-24 h-24 bg-white dark:bg-slate-900 rounded-3xl flex items-center justify-center shadow-lg mb-8 group-hover:scale-110 transition-transform duration-500">
+                  <Bot className="w-10 h-10 text-slate-300 dark:text-slate-700" />
                 </div>
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-2">Ready to write</h3>
-                <p className="text-sm max-w-[240px] text-center leading-relaxed">
-                  Fill in the details on the left and witness the magic of modern AI.
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">AI is ready</h3>
+                <p className="text-slate-500 max-w-sm mx-auto leading-relaxed">
+                  왼쪽에서 주제를 입력하시면,<br/>
+                  당신의 스타일을 완벽하게 학습한 AI가 글을 작성합니다.
                 </p>
               </div>
             )}
@@ -223,69 +211,40 @@ export default function Home() {
         </main>
       </div>
 
-      {/* Settings Modal */}
+      {/* API Key Modal */}
       {showSettings && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-6 animate-in fade-in duration-300">
-          <div className="bg-white dark:bg-zinc-900 p-10 rounded-[32px] max-w-md w-full shadow-2xl border border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-300">
-            <h2 className="text-3xl font-black mb-2 dark:text-zinc-50">Engine Config</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-8">
-              Your keys are stored locally and never touch our servers.
-            </p>
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-widest text-zinc-400">OpenAI Secret Key</label>
-                <input
-                  type="password"
-                  value={apiKeys.openai}
-                  onChange={(e) => setApiKeys({...apiKeys, openai: e.target.value})}
-                  placeholder="sk-..."
-                  className="w-full px-5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 outline-none focus:border-blue-500 transition-all font-mono text-sm"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-widest text-zinc-400">Google Gemini Key</label>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-[32px] max-w-sm w-full shadow-2xl border border-slate-100 dark:border-slate-800 animate-in zoom-in-95">
+            <h2 className="text-2xl font-bold mb-6">API Configuration</h2>
+            <div className="space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Gemini API Key</label>
                 <input
                   type="password"
                   value={apiKeys.gemini}
                   onChange={(e) => setApiKeys({...apiKeys, gemini: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-slate-800 focus:border-indigo-500 outline-none transition-all text-sm font-mono"
                   placeholder="AIza..."
-                  className="w-full px-5 py-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 outline-none focus:border-blue-500 transition-all font-mono text-sm"
                 />
               </div>
-            </div>
-            <div className="mt-12 flex gap-4">
-              <button
-                onClick={() => saveKeys(apiKeys)}
-                className="flex-1 py-4 bg-zinc-950 dark:bg-zinc-50 text-white dark:text-black font-bold rounded-2xl hover:shadow-lg transition-all"
-              >
-                Save Configuration
-              </button>
-              <button
-                onClick={() => setShowSettings(false)}
-                className="px-6 py-4 font-bold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
-              >
-                Cancel
-              </button>
+              <div className="pt-4 flex gap-3">
+                <button
+                  onClick={() => saveKeys(apiKeys)}
+                  className="flex-1 py-3 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="px-5 py-3 font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
-
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #e4e4e7;
-          border-radius: 10px;
-        }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #27272a;
-        }
-      `}</style>
     </div>
   );
 }
